@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<script type="text/javascript">
+		Array.prototype.deleteArray = function(){
+			var arr = [this[0]],l = this.length,arr1=[];
+			for(var i = 1;i<l;i++){
+				var flag = 0;
+				for(var j = 0,k = arr.length;j<k;j++){
+					if(this[i] == arr[j]){
+						flag =1;
+						break;
+					}
+				}
+				if(flag){
+					arr1.push(this[i]);
+				}else{
+					arr.push(this[i]);
+				}
+			}
+			return arr1;
+		}
+		console.log([1,2,3,4,2,2,3].deleteArray());
+		function mySort(){
+			var tags = new Array();
+			for(var i =0;i<arguments.length;i++){
+				tags.push(arguments[i]);
+			}
+			return tags.sort(function(a,b){
+				return a-b;
+			})
+		}
+		var result = mySort(50,11,16,32,24,99,57,100);//传入参数个数不确定
+		console.info(result);//显示结果
+	</script>
+</head>
+<body>
+</body>
+</html>

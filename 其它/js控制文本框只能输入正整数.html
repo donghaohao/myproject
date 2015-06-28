@@ -1,0 +1,26 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+    <style type="text/css">
+    </style>
+</head>
+<body>
+    <input type="text" id="input">
+<script>
+    window.onload = function () {
+        var input = document.getElementById("input");
+        //onkeyup也可以 oninput IE8 不支持
+        input.oninput = function(){
+            if(!(/^\d*$/.test(input.value))){
+                input.style.color = 'red';
+            }
+            else{
+                input.style.color = 'black';
+            }
+        }
+    }
+</script>
+</body>
+</html>

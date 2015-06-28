@@ -1,0 +1,262 @@
+1.冒泡排序
+从后往前排序（从小到大排序）：
+1.从最后一个元素开始，依次比较相邻的两个元素，后一个比前一个小时，交换二个元素的位置
+2.这样对数组下标为N-1至j=0的元素进行一轮循环结束后，最小的元素就沉到最前面了。
+3.j++，如果j!=N-1，则重复前两部，否则排序完成。
+
+
+从前往后排序（从大到小排序）：
+1.从第一元素开始，依次比较相邻的两个元素，前一个元素比后一个大时，交换二个元素的位置
+2.这样对数组下标为0至N-1的元素进行一轮循环结束后，最大的元素就沉到最后面了
+3.N=N-1，如果N！=0，则重复前两部，否则排序完成。
+
+冒泡排序比较稳定，时间复杂度为o(n^2)，空间复杂度是o(1); 
+
+改进的冒泡排序算法：设置一个标记，如果这一趟发生了交换，则标记为true，否则为false，如果没有发生交换，说明排序已经完成。(从前往后排举例)
+<script type="text/javascript">
+function bubbleSort_Asc(arr)
+{
+   if(!arr||arr.length==0)
+   	  return ;
+   for(var i=0;i<arr.length;i++)
+   {
+   	  for(j=arr.length-1;j>i;j--)
+   	  {
+           if(arr[j]<arr[j-1])
+           {
+           	  var temp=arr[j];
+           	  arr[j]=arr[j-1];
+           	  arr[j-1]=temp;
+           }
+   	  }
+   }
+   return arr;
+}
+function bubbleSort_Desc(arr)
+{
+	if(!arr||arr.length==0)
+      return ;
+    for(var i=0;i<arr.length;i++)
+    {
+    	for(var j=0;j<arr.length-i-1;j++)
+    	{
+    		if(arr[j]>arr[j+1])
+    		{
+    			var temp=arr[j];
+    			arr[j]=arr[j+1];
+    			arr[j+1]=temp;
+    		}
+    	}
+    }
+    return arr;
+
+}
+
+function bubbleSort_flag(arr)
+{
+    boolean flag=true;
+    var n=arr.length;
+    var k=n;
+    if(!arr||arr.length==0)
+    	return ;
+    while(flag)
+    {
+    	flag=false;
+    	for(var i=1;i<k;i++)
+    	{
+    		if(arr[i-1]>arr[i])
+    		{
+    			var temp=arr[i-1];
+    			arr[i-1]=arr[i];
+    			arr[i]=temp;
+          flag=true;
+    		}
+    		k--;
+    	}
+    }
+    return arr;
+}
+</script>
+
+2.快速排序:通过一趟扫描，将要排序的数据分割成独立的两个部分，其中一部分的所有数据都要比另外一部分的所有的数据小，然后再按照此方法再对这两个部分分别进行快速排序，整个排序过程可以递归进行，以此达到整个数据变成有序序列。(每次排序，将下标为low的数据作为key值，首先从high开始，若下标为high的数字比key大，则high自减，继续比较，若下标为high数字比下标比key小，则将high的数字移至low处。然后从low开始，若下标为low的数字比key小，则low自增，继续比较，否则将下标为low的数字移至high处，当low==high的时候循环结束，此时将key的值赋值给下标为low的数字，这样一趟比较，比key小的在左边，比key大的就都在右边了，然后递归再对两边分别快速排序即可)
+
+快速排序不稳定，时间复杂度最好是o(n*logn)，最坏是o(n^2)
+<script type="text/javascript">
+function partiton(arr,low,high)
+{
+    var key=arr[low];
+    while(low<high)
+    {
+        while(low<high&&arr[high]>key) high--;
+        arr[low]=arr[high];
+        while(low<high&&arr[low]<=key) low++;
+        arr[high]=arr[low];
+    }
+    arr[low]=key;
+    return low;
+}
+function quick_sort(arr,low,high)
+{
+    if(!arr||arr.length==0)
+      return ;
+    while(low<high)
+    {
+        var loc=partition(arr,low,high);
+        quick_sort(arr,low,loc-1);
+        quick_sort(arr,loc+1,high);
+    }
+
+}
+
+</script>
+3.插入排序：每一次都是将一个待排数据插入到已经排序好的数据中的适当位置，直到全部排序完成(每次排序的时候，将i下标所指的数据作为一个待排序数据，并设置为对比的key，依次与前面的数据进行排序，若前面的数字比key大，则将前面的数据后移一位，直到第一个数据已完成对比排序或者前面的数据不比key大，则一次比较结束，然后i++，排序下一个数据)。
+
+插入排序比较稳定，时间复杂度是o(n^2)
+<script type="text/javascript">
+function insert_sort(arr)
+{
+   if(!arr||arr.length==0)
+    return ;
+   var len=arr.length;
+   for(var i=1;i<len;i++)
+   {
+     if(arr[i-1]>arr[i])
+     {
+        var temp=arr[i];
+        var j=i;
+        while(j>0&&arr[j-1]>temp)
+        {
+           arr[j]=arr[j-1];
+           j--;
+        }
+        arr[j]=temp;
+     }
+   }
+}
+</script>
+4.选择排序：每次都从待排序数据中选择一个最小的（最大的）的数字，放在数组的首位。（每次排序将待排序数据的第一个数字作为min，看做是最小值，依次与后面的数字做比较，若发现比min值小，则替换掉最小值min与最小值下标min_index，一趟比较完毕，将最小值下标与待排序第一个数字下标比较，若发生变化，则说明最小值在后面，交换二者的位置，然后第一个数字就是最小了，然后i++，从第二个数字开始再次进行后续数字的排序。）
+
+选择排序不稳定，时间复杂度是o(n^2)
+<script type="text/javascript">
+function selection_sort(arr)
+{
+   if(!arr||arr.length==0)
+    return;
+   var len=arr.length;
+   for(var i=0;i<len;i++)
+   {
+      var min=arr[i];
+      var min_index=i;
+      for(var j=i;j<len;j++)
+      {
+         if(arr[j]<min)
+         {
+             min=arr[j];
+             min_index=j;
+         }
+      }
+      if(min_index!=i)//通过比较发现最小下标发生了变化，说明最小值在后面
+      {
+         var temp=arr[i];
+         arr[i]=min;
+         arr[min_index]=temp;
+      }
+   }
+}
+</script>
+5.希尔排序：希尔排序是插入排序的一种改建，重点在于关键字的选取，它将数组分成小的子序列，然后对这些子序列进行插入排序，然后再次将数组分成稍微大一些的子序列，进行插入排序，重复几次操作后，数组基本有序，再对整个数组进行一次插入排序。
+
+划分子序列的规则涉及到数学上尚未解决的问题，目前的方案是：增量的取值规则为第一次取总长度的一半，第二次取一半的一半，依次类推直到为1为止。
+
+希尔排序是跳跃的交换数据，所以不稳定，时间复杂度是o(n*logn)
+<script type="text/javascript">
+function shell_sort(arr)
+{
+   if(!arr||arr.length==0)
+     return ;
+   var len=arr.length;
+   for(var group=Math.floor(len/2);group<len;group=Math.floor(group/2))//获取每次的分组间隔
+   {
+       for(var i=0;i<group;i++)//i值不同，代表不同的组
+       {
+           for(var j=i+group;j<len;j=j+group)//对于每一个子序列，进行插入排序
+           {
+               if(arr[j-group]>arr[j])
+               {
+                  var temp=arr[j];
+                  var k=j;
+                  while(k>=group&&arr[k-group]>temp)
+                  {
+                      arr[k]=arr[k-group];
+                      k=k-group;
+                  }
+                  arr[k]=temp;
+               }
+           }
+       }
+   }
+   
+}
+</script>
+6.归并排序：归并排序采用的是分治法的思想，就是将一个大的数组分成若干个子数组，对每一个子数组进行排序，继续把子数组与子数组合并，合并后仍然有序，直到全部合并完形成有序的数组。
+
+归并排序是稳定的，时间复杂度是o(n*logn)，因为需要借用外用空间，所以空间复杂度是o(n)
+<script type="text/javascript">
+function merge(arr,first,mid,last,sort)
+{
+    var i=first;j=mid;
+    var k=0;
+    while(i<mid&&j<last)
+    {
+        if(arr[i]<arr[j])
+            sort[k++]=arr[i++];
+        else sort[k++]=arr[j++];
+    }
+    while(i<mid)
+    {
+       sort[k++]=arr[i++];
+    }
+    while(j<last)
+    {
+       sort[k++]=arr[j++]
+    }
+    for(var v=0;v<k;v++)
+    {
+       arr[first+v]=sort[v];
+    }
+}
+function merge_sort(arr,first,last,sort)
+{
+    if(!arr||arr.length==0)
+      return ;
+    if(first+1<last)
+    {
+        var mid=(first+last)/2;
+        merge_sort(arr,first,mid,sort);
+        merge_sort(arr,mid,last,sort);
+        merge(arr,first,mid,last,sort); 
+    }
+}
+</script>
+
+1.二分查找：
+1.将数组排序(从小到大)；
+2.每次跟中间的数mid比较，如果相等可以直接返回，如果比mid大则继续查找大的一边，否则继续查找小的一边。 
+<script type="text/javascript">
+function binary_search(arr,key)
+{
+   if(!arr||arr.length==0)
+       return ;
+   var low=0;
+   var high=arr.length-1;
+   while(low<high)
+   {
+      mid=(low+high)/2;
+      if(arr[mid]==key)
+         return mid;
+      if(arr[mid]>key) high=mid-1;
+      else low=mid+1;
+   }
+   return -1;
+}
+</script>

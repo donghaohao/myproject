@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Document</title>
+	<style>
+		#menu{visibility: hidden;position: absolute;border: 1px solid #ccc;width: 100px;height: 100px;}
+		ul{list-style: none;}
+	</style>
+</head>
+<body>
+	<div id= "menu">
+		<ul>
+			<li>菜单1</li>
+			<li>菜单2</li>
+			<li>菜单3</li>
+		</ul>
+	</div>
+	<script>
+		window.onload = function(){
+			var menu = document.getElementById("menu");
+			var ch = document.documentElement.clientHeight;
+			var cw = document.documentElement.clientWidth;
+			var w = menu.offsetWidth;
+			var h = menu.offsetHeight;
+			document.oncontextmenu = function(e){
+				var e = e||window.event;
+				var left = e.clientX>(cw - w)?(e.clientX-w):e.clientX;
+				var top = e.clientY>(ch - h)?(e.clientY-h):e.clientY;
+				menu.style.left = left+ 'px';
+				menu.style.top = top + 'px';
+				menu.style.visibility = 'visible';
+				return false;
+			}
+			document.onclick = function(){
+				menu.style.visibility = 'hidden';
+			}
+		}
+	</script>
+</body>
+</html>

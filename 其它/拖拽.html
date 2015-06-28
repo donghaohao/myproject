@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Document</title>
+	<style>
+		#box{position: absolute;width: 100px;height: 100px;background: #f00;}
+	</style>
+</head>
+<body>
+	<div id="box"></div>
+	<script>
+		window.onload = function(){
+			var box = document.getElementById("box");
+			var drag = false;
+			var ch = document.documentElement.clientHeight;
+			var cw = document.documentElement.clientWidth;
+			var w = box.offsetWidth;
+			var h = box.offsetHeight;
+			var disX = 0;
+			var disY = 0;
+			box.onmousedown = function(e){
+				drag = true;
+				var e = e||window.event;
+				disX = e.clientX - box.offsetLeft;
+				disY = e.clientY - box.offsetTop;
+			}
+			//将事件监听到box上会导致如果鼠标在下面超出了浏览器范围会导致bug，最好将事件监听到document上。
+			box.onmousemove = function(e){
+				if(!drag){
+					return;
+				}
+				var e = e||window.event;
+				var left = e.clientX - disX;
+				var top = e.clientY - disY;
+				left = left<0?0:left;
+				top = top<0?0:top;
+				left = left>cw-w?cw-w:left;
+				top = top>ch-h?ch-h:top;
+				box.style.left = left +'px';
+				box.style.top = top+'px';	
+				box.onmouseup = function(e){
+					drag = false;
+				}			
+			}
+		}
+	</script>
+</body>
+</html>

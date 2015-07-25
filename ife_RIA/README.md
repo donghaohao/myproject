@@ -10,6 +10,6 @@
 
 因为很忙，大概做了6、7个小时，只是一个简单的版本，测试了很多次，可能有没测出的bug，有任何建议在issu中提出。
 
-[github地址](https://github.com/BeMyBestHao/myproject/tree/master/%E7%99%BE%E5%BA%A6ife%E6%9A%91%E5%81%87%E7%8F%ADRIA)
+[github地址](https://github.com/BeMyBestHao/myproject/tree/master/ife_RIA)
 [在线演示地址](http://bemybesthao.github.io/website/baiduiferia/web.html)
 

@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Robot</title>
+	<style>
+		td{width: 10px;height: 10px;background: #ccc}
+		table{margin:auto 0;}
+		.robot{background: red}
+		.barrier{background: black}
+		.end{background: green}
+		input{margin-top: 10px;margin-bottom: 10px;}
+	</style>
+	<script>
+		window.onload = function(){
+			var l = 10;
+			create(l,l);
+			var trs = document.getElementsByTagName('tr'),
+				robot = [0,0],
+				barriers,
+				end = [l-1,l-1],
+				timer = null,
+				hasVisited = [],
+				way = [],
+				begin = document.getElementById('begin'),
+				input = document.getElementById('input');
+			show(robot,'robot');
+			show(end,'end');
+			function show(arr,className){
+				if(!arr){
+					return;
+				}
+				if(Array.isArray(arr[0])){
+					for(var key in arr){
+						getTd(trs[arr[key][0]],arr[key][1]).className = className;
+					}
+				}
+				else{
+					getTd(trs[arr[0]],arr[1]).className = className;
+				}
+			}
+			begin.onclick = function(){
+				robot = [0,0];
+				barriers = eval(input.value);
+				show(barriers,'barrier');
+				if(!barriers){
+					alert("请设置障碍");
+				}
+				else{
+					timer = setInterval(move,1000);
+				}
+			}
+			function move(){
+				show(robot,'');
+				if(robot[0] == l-1 && robot[1] == l-1){
+					show(robot,'robot');
+					clearInterval(timer);
+					alert('到达终点');
+					location.reload(true);
+				}
+				else if(robot[1] < l-1 && !isInArray([robot[0],robot[1]+1],barriers) && !isInArray([robot[0],robot[1]+1],hasVisited)){
+					way.push([robot[0],robot[1]]);
+					robot = [robot[0],robot[1]+1];
+					
+				}else if(robot[0] < l-1 && !isInArray([robot[0]+1,robot[1]],barriers) && !isInArray([robot[0]+1,robot[1]],hasVisited)){
+					way.push([robot[0],robot[1]]);
+					robot = [robot[0]+1,robot[1]];
+					
+				}
+				else{
+					hasVisited.push([robot[0],robot[1]]);
+					if(way.length == 0){
+						clearInterval(timer);
+						alert('无法到达终点');
+						location.reload(true);
+					}
+					else{
+						var a = way.pop();
+						robot = [a[0],a[1]];
+					}
+				}
+				show(robot,'robot');
+			}
+		}
+		function create(w,h){
+			var html = "<table>";
+			for(var i=0;i<w;i++){
+				html+="<tr>";
+				for(var j=0;j<h;j++){
+					html+="<td></td>";
+				}
+				html+="</tr>";
+			}
+			html+="</table>";
+			document.getElementById("robot").innerHTML=html;
+		}
+		function getTd(tr,y){
+			return tr.getElementsByTagName('td')[y];
+		}
+		function isInArray(arr1,arr2){
+			for(var key in arr2){
+				if(arr1.toString() == arr2[key].toString()){
+					return true;
+				}
+			}
+			return false;
+		}
+	</script>
+</head>
+<body>
+	<div id = "robot" ></div>
+	<input type="text" id ="input" value="[[0,4],[1,3],[2,2],[3,1]]"/>
+	<input type="button" value = "开始" id = "begin">
+	<div>红色为机器人，绿色为目的地，黑色为障碍，先在文本框中输入障碍的坐标，例如[[0,4],[1,3],[2,2],[3,1]]，请确保是二维数组，然后点击开始</div>
+</body>
+</html>

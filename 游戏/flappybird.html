@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>flappy bird</title>
+	<style>
+		*{margin: 0;padding: 0}
+		body{}
+		#container{width: 100%;height: 500px;background-color: #A0D8F1;position: relative;overflow: hidden;}
+		#bird{width: 20px;height: 20px;background-color: red;position: absolute;left: 500px;top: 200px;z-index: 2}
+		#trees{position: absolute;width: 100%;height: 100%}
+		.tree{position:absolute;background-color: #14A440;width: 100px;height: 100%;top: 0}
+		.white{height: 200px;width: 100%;background-color: #A0D8F1;}
+		#info{font-size: 100px;font-weight: bold;color:#EF4621;position: absolute;text-align: center;width: 100%;height: 100%;z-index: 3;margin-top: 100px;}
+		#score{position: absolute;top: 10px;left: 10px;font-size: 50px;color: #fff;width: 80px;height: 80px;z-index: 3}
+	</style>
+</head>
+<body>
+	<div id="container">
+		<div id = "score"></div>
+		<div id="bird"></div>
+		<div id="trees">
+			
+		</div>
+		<div id="info"></div>
+	</div>
+	<script>
+		window.onload = function(){
+			var bird = document.getElementById('bird');
+			var container = document.getElementById('container');
+			var trees = document.getElementById('trees');
+			var ySpeed = 1;
+			var w = document.documentElement.clientWidth;
+			var info = document.getElementById('info');
+			var score =document.getElementById('score');
+			var treeMove = null;
+			var ch = container.offsetHeight, bh = bird.offsetHeight,bw = bird.offsetWidth;
+			info.innerHTML = '按空格开始游戏';
+			var isStart = false;
+			score.innerHTML = 0;
+			//开始游戏
+			function start(){
+				bird.style.left = 500 + 'px';
+				bird.style.top = 200 + 'px';
+				isStart = true;
+				info.innerHTML = '';
+				trees.innerHTML = '';
+				score.innerHTML = 0;
+				bird.timer = setInterval(function(){
+					if(bird.offsetTop<ch - bh){
+						bird.style.top = bird.offsetTop+ySpeed+'px';
+					}else{
+						stop();
+					}
+				},10);
+				createTree();
+				treeMove = setInterval(function(){createTree()},3000);
+			}
+			//按下空格
+			document.onkeydown = function(e){
+				var e = e||window.event;
+				if(e.keyCode == 32){
+					if(!isStart){
+						start();
+					}else{
+						bird.style.top = bird.offsetTop-50+'px';
+					}
+				}
+			}
+			//建柱子，每次建在最右边，外层div背景为绿，内层div背景是白色
+			function createTree(){
+				var div = document.createElement('div');
+				var white = document.createElement('div');
+				white.className = 'white';
+				//随机白色div的位置margin-top 100-300
+				var mt = Math.floor(Math.random()*200)+100;
+				white.style['margin-top'] = mt+'px';
+				div.className = 'tree';
+				div.style.left = w+'px';
+				div.appendChild(white);
+				trees.appendChild(div);
+				var dw = div.offsetWidth;
+				var pass = false;
+				div.timer = setInterval(function(){
+					//开始是把这三个if写到一起的，为了修正位置分开写了。
+					//当撞到柱子左边时
+					if(div.offsetLeft == bird.offsetLeft+bw && (bird.offsetTop <= mt || bird.offsetTop >= mt+200 - bh)){
+						stop();
+					}
+					//在白色区域撞到柱子上面，修正小鸟的位置
+					if(bird.offsetLeft > div.offsetLeft-bw && bird.offsetLeft<div.offsetLeft+dw && bird.offsetTop <= mt){
+						stop();
+						bird.style.top = mt + 'px';
+					}
+					//在白色区域撞到柱子下面，修正小鸟的位置
+					if(bird.offsetLeft > div.offsetLeft-bw && bird.offsetLeft<div.offsetLeft+dw && bird.offsetTop >= mt+200 - bh){
+						stop();
+						bird.style.top = mt + 200 - bh + 'px';
+					}
+					// else if( bird.offsetLeft > div.offsetLeft-bird.offsetWidth && bird.offsetLeft<div.offsetLeft+div.offsetWidth){
+					// 	stop();
+					// }
+					//计分,如果曾经没通过，然后越过了柱子，分加1
+					if(!pass){
+						if(bird.offsetLeft > div.offsetLeft + dw){
+							score.innerHTML = +score.innerHTML + 1;
+							pass = true;
+						}
+					}
+					//柱子运动到左边就移除掉
+					if(div.offsetLeft < -100){
+						trees.removeChild(div);
+						clearInterval(div.timer);
+					}else{
+						div.style.left = div.offsetLeft - 1+'px';
+					}
+				},10)
+			}
+			// trees.timer = setInterval(function(){
+			// 	trees.style.left = trees.offsetLeft - 1+'px';
+			// },10)
+			//停止，关闭所有定时器
+			function stop(){
+				clearInterval(treeMove);
+				clearInterval(bird.timer);
+				var divs = trees.getElementsByTagName('div');
+				for(var i=0;i<divs.length;i++){
+					clearInterval(divs[i].timer);
+				}
+				//document.onkeydown = null;
+				info.innerHTML = 'Game Over!!'+'<br>'+'按空格开始游戏';
+				isStart =false;
+			}
+		}
+	</script>
+</body>
+</html>

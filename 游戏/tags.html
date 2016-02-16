@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8">
+		<title>标签云</title>
+		<style>
+			*{margin: 0;padding: 0}
+			#container{background-color: #585550;height: 300px;position: relative;}
+			span{position: absolute;color:#fff;font-size: 16px;font-weight:bold;opacity: 0.3;filter:alpha(opacity=30);}
+		</style>
+	</head>
+	<body>
+		<div id="container">
+			<!--<span style="left:100px;top: 50px;">This is the test Tag1</span>
+			<span style="left:1000px;top: 50px;">This is the test Tag2</span>
+			<span style="left:100px;top: 100px;">This is the test Tag3</span>
+			<span style="left:1000px;top: 100px;">This is the test Tag4</span>-->
+		</div>
+		<script type="text/javascript">
+			function getStyle(obj, attr)
+			{
+				if(obj.currentStyle)
+				{
+					return obj.currentStyle[attr];
+				}
+				else
+				{
+					return getComputedStyle(obj, false)[attr];
+				}
+			}
+			
+			function startMove(obj, json, fn)
+			{
+				clearInterval(obj.timer);
+				obj.timer=setInterval(function (){
+					var bStop=true;		//这一次运动就结束了——所有的值都到达了
+					for(var attr in json)
+					{
+						//1.取当前的值
+						var iCur=0;
+						
+						if(attr=='opacity')
+						{
+							iCur=parseInt(Math.round(parseFloat(getStyle(obj, attr))*100));
+						}
+						else
+						{
+							iCur=parseInt(getStyle(obj, attr));
+						}
+						
+						//2.算速度
+						var iSpeed=(json[attr]-iCur)/8;
+						iSpeed=iSpeed>0?Math.ceil(iSpeed):Math.floor(iSpeed);
+						//3.检测停止
+						if(iCur!=json[attr])
+						{
+							bStop=false;
+						}
+						
+						if(attr=='opacity')
+						{
+							obj.style.filter='alpha(opacity:'+(iCur+iSpeed)+')';
+							obj.style.opacity=(iCur+iSpeed)/100;
+						}
+						else
+						{
+							obj.style[attr]=iCur+iSpeed+'px';
+						}
+					}
+					
+					if(bStop)
+					{
+						clearInterval(obj.timer);
+						
+						if(fn)
+						{
+							fn();
+						}
+					}
+				}, 60)
+			}
+			function a(span){
+					var left = parseInt(getStyle(span,'left'));
+					var target = left - 100;
+					startMove(span,{'font-size':24,'opacity':100},function(){
+						startMove(span,{left:target},function(){
+							startMove(span,{opacity:0},function(){
+								span.style['font-size'] = 16+'px';
+								span.style.opacity = 0.3;
+								span.style.left = left + 'px';
+								span.style.filter='alpha(opacity:'+30+')';
+								a(span);
+							})
+						})
+					});
+			}
+			function Tag(parent,json){
+				this.init(parent,json);
+			}
+			Tag.prototype.init = function(parent,json){
+				var span = document.createElement('span');
+				span.style.left = json.left+'px';
+				span.style.top = json.top +'px';
+				span.textContent = json.text;
+				parent.appendChild(span);
+				setTimeout(function(){
+					a(span);
+				},json.time);
+			}
+			window.onload = function () {
+				var div = document.getElementById('container');
+				var spans = document.getElementsByTagName('span');
+				new Tag(div,{left:100,text:'This is the test Tag1',top: 50,time:1000});
+				new Tag(div,{left:500,text:'This is the test Tag2',top: 200,time:3000});
+				new Tag(div,{left:800,text:'This is the test Tag3',top: 150,time:1500});
+				new Tag(div,{left:200,text:'This is the test Tag4',top: 180,time:2000});
+				new Tag(div,{left:1000,text:'This is the test Tag5',top: 50,time:1600});
+				new Tag(div,{left:700,text:'This is the test Tag6',top: 90,time:2600});
+			}
+		</script>
+	</body>
+
+</html>

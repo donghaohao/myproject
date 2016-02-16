@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<!--
+*名称：贪吃蛇
+*作者：DH
+*思路：苹果的位置是随机的，把蛇的每个位置用二维数组保存起来，最主要的思路是蛇移动一步，后面的部分就会补充到前面，所以把尾部截取一格，然后给前面添加一个头。然后是判断失败，咬到自己或者碰到墙壁就失败。
+-->
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>贪吃蛇</title>
+	<style type="text/css">
+		table{border-collapse: collapse;}
+		td{width: 8px;height: 8px;background: #ccc;padding: 0;}
+		.snake{background-color: #f00;}
+		.apple{background-color: #0f0;}
+		.head{background-color: #00f;}
+	</style>
+</head>
+<body>
+	<script>
+		window.onload = function(){
+			//left 1 ,up 2,right 3,down 4; stop:0,记录现在的方向
+			var now = 0;
+			var timer = null;
+			var applePosition = [0,0];
+			var x = 40,y = 40;	
+			//保存蛇的位置
+			var snake = [[10,10],[10,11],[10,12],[10,13],[10,14]];
+			create(x,y);
+			var tds = document.getElementsByTagName("td");
+			randomApplePosition();
+			//tds[xyTotd(applePosition)].className = 'apple';
+			function xyTotd(arr){
+				return arr[0]*x+arr[1];
+			}
+			showSnake();
+			function moveD(){
+				
+				var s = snake[0][0]+1;
+				//超出边界或碰到自己就失败
+				if(s>=x || checkFail()){
+					clearInterval(timer);
+					alert("失败");
+					return;
+				}
+				else{
+					snake.unshift([s,snake[0][1]]);
+					var po = snake.pop();
+					
+					tds[xyTotd(po)].className = '';
+					console.log(snake);
+					showSnake();
+					//checkFail();
+					if(arrayEqual(snake[0],applePosition)){
+						snake.unshift([snake[0][0]+1,snake[0][1]]);
+						randomApplePosition();
+					}
+				}
+				
+			}
+			function moveU(){
+				
+				var s = snake[0][0]-1;
+				if(s<0|| checkFail()){
+					clearInterval(timer);
+					alert("失败");
+					return;
+				}else{
+					snake.unshift([s,snake[0][1]]);
+					var po = snake.pop();
+					
+					tds[xyTotd(po)].className = '';
+					console.log(snake);
+					showSnake();
+					//checkFail();
+					if(arrayEqual(snake[0],applePosition)){
+						snake.unshift([snake[0][0]-1,snake[0][1]]);
+						randomApplePosition();
+					}
+				}
+				
+			}
+			function moveR(){
+				
+				var s = snake[0][1]+1;
+				if(s>=y|| checkFail()){
+					clearInterval(timer);
+					alert("失败");
+					return;
+				}else{
+					snake.unshift([snake[0][0],s]);
+					var po = snake.pop();
+					
+					tds[xyTotd(po)].className = '';
+					console.log(snake);
+					showSnake();
+					//checkFail();
+					if(arrayEqual(snake[0],applePosition)){
+						snake.unshift([snake[0][0],snake[0][1]+1]);
+						randomApplePosition();
+					}
+				}
+
+			}
+			function moveL(){
+				var s = snake[0][1]-1;
+				if(s<0|| checkFail()){
+					clearInterval(timer);
+					alert("失败");
+					return;
+				}
+				else{
+					snake.unshift([snake[0][0],s]);
+					var po = snake.pop();
+					tds[xyTotd(po)].className = '';
+					console.log(snake);
+					showSnake();
+					//checkFail();
+					if(arrayEqual(snake[0],applePosition)){
+						snake.unshift([snake[0][0],snake[0][1]-1]);
+						randomApplePosition();
+					}
+				}
+				
+			}
+			//timer = setInterval(move,100);监听键盘事件，例如如果正在向下运动，则只能向左或向右按。
+			document.onkeydown = function(e){
+				var e = e||window.event;
+				switch(e.keyCode){
+					//left
+					case 37:
+						if(now == 2||now == 4||now == 0){
+							now = 1;
+							clearInterval(timer);
+							timer = setInterval(moveL,100);
+						}
+						break;
+					//up
+					case 38:
+						if(now == 1||now == 3||now == 0){
+							now = 2;
+							clearInterval(timer);
+							timer = setInterval(moveU,100);
+							
+						}
+						break;
+					//right
+					case 39:
+						if(now == 2||now == 4||now == 0){
+							now = 3;
+							clearInterval(timer);
+							timer = setInterval(moveR,100);
+							
+						}
+						break;
+					//down
+					case 40:
+						if(now == 1||now == 3||now == 0){
+							now = 4;
+							clearInterval(timer);
+							timer = setInterval(moveD,100);
+							
+						}
+						break;
+				}
+			}
+			//渲染整个蛇
+			function showSnake(){
+				for(var key in snake){
+					tds[xyTotd(snake[key])].className = 'snake';
+				}
+				tds[xyTotd(snake[0])].className = 'head';
+			}
+			//创建表格
+			function create(w,h){
+				var html = "<table>";
+				for(var i=0;i<w;i++){
+					html+="<tr>";
+					for(var j=0;j<h;j++){
+						html+="<td></td>";
+					}
+					html+="</tr>";
+				}
+				html+="</table>";
+				document.body.innerHTML=html;
+			}
+			//随机位置
+			function randomPosition(n){
+				return Math.floor(Math.random()*n);
+			}
+			//随机苹果，如果刚好随机到原来的位置就再随机一次
+			function randomApplePosition(){
+				var ax =randomPosition(x);
+				var ay =randomPosition(y);
+				if(!arrayEqual(applePosition,[ax,ay])){
+					applePosition = [ax,ay];
+				}
+				else{
+					randomApplePosition();
+				}
+				tds[xyTotd(applePosition)].className = 'apple';
+			}
+			//比较两个数组是否相等
+			function arrayEqual(arr1,arr2){
+				return arr1.toString() == arr2.toString();
+			}
+			function checkFail(){
+				//不能这样复制数组，数组是一个引用，可以用contact()和slice()复制
+				var temp = snake.slice(0);
+				//注意这里，snake是二位数组，不加new Array也会使a和snake[0]引用同一个
+				var a = new Array(temp.shift());
+				var flag = false;
+				// switch(now){
+				// 	case 1:
+				// 		a[1]-=1;
+				// 		break;
+				// 	case 2:
+				// 		a[0]-=1;
+				// 		break;
+				// 	case 3:
+				// 		a[1]+=1;
+				// 		break;
+				// 	case 4:
+				// 		a[0]+=1;
+				// 		break;
+				// 	default:
+				// 		break;
+				// }
+				for(var key in temp){
+					if(arrayEqual(a,temp[key])){
+						flag = true;
+						break;
+					}
+				}
+				if(flag){
+					return true;
+				}else{
+					return false;
+				}
+			}
+		}
+
+	</script>
+</body>
+</html>

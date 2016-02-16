@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Document</title>
+</head>
+<body>
+	<div>
+		<div id="test">daf</div>
+		<div class="a">fsjlsd;fja;</div>
+		<div class="ab">test</div>
+	</div>
+	<div>
+		<span class="a">1</span>
+		<span>2</span>
+		<span>3</span>
+	</div>
+	<script src ="lib.js"></script>
+	<script src="jquery-1.7.1.js"></script>
+	<script>
+		//console.log(DH('div'));
+		//console.log(DH('div').first());
+		//console.log($(document.getElementById('test')));
+		//console.log(DH('div').first().css('color','red'));
+		//console.log(DH('.a').parent().css('background-color','red'));
+		// DH.each(DH('.a'),function(){
+		// 	DH(this).css('color','green');
+		// })
+		// DH('.a').each(function(){
+		// 	DH(this).css('color','yellow');
+		// })
+		// DH.ajax({
+		// 	url:'http://127.0.0.1/testajax.php?name=donghao',
+		// 	success:function(data){
+		// 				console.log(data);
+		// 			},
+		// 	error:function(){console.log('失败')}
+		// 	})
+		//console.log(DH('#test').attr("id"));
+		//DH('#test').attr("name","success");
+		//DH('#test').attr({dfa:"aaa",fda:"ddd"})
+		//var span = document.createElement('span');
+		//span.innerText = 'Donghao';
+		//DH('.a').after(document.getElementById('test'));
+		//DH('.a').after(span);
+		$(document).on('click','.a',function(){console.log(this)});
+	</script>
+</body>
+</html>
